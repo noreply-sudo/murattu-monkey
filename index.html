@@ -1,287 +1,277 @@
-import React, { useState } from 'react';
-import { 
-  User, 
-  Lock, 
-  Calendar, 
-  Clock, 
-  Video, 
-  LogOut, 
-  ChevronRight, 
-  GraduationCap,
-  Coffee
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jubilee Learn - Allied Health</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Smooth transitions for screen switching */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Hide scrollbar for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 flex items-center justify-center min-h-screen font-sans text-slate-800 antialiased">
 
-// --- Hardcoded Data ---
-
-// Users extracted from the provided CSV, with dummy passwords.
-const users = [
-  { email: 'abhijithroy17@gmail.com', password: 'password123', name: 'Abhijith Roy' },
-  { email: 'amalvijayakumaramalvijayakumar@gmail.com', password: 'password123', name: 'Amal Vijayakumar' },
-  { email: 'lakshmilakshmidevin715@gmail.com', password: 'password123', name: 'Lakshmi Devi N' },
-  { email: 'sanjujacobsaji7@gmail.com', password: 'password123', name: 'Sanju Jacob Saji' },
-  { email: 'amalvijayakumara@gmail.com', password: 'password123', name: 'Amak Vijayakumar' },
-  // Adding a simple test user for convenience
-  { email: 'test@example.com', password: 'password123', name: 'Test Student' }
-];
-
-// Schedule from 9 AM to 4 PM
-const scheduleData = [
-  { 
-    id: 1, 
-    time: '09:00 AM - 10:00 AM', 
-    subject: 'Anatomy & Physiology', 
-    instructor: 'Dr. Sarah Jenkins',
-    meetUrl: 'https://meet.google.com/abc-defg-hij',
-    isBreak: false
-  },
-  { 
-    id: 2, 
-    time: '10:00 AM - 11:00 AM', 
-    subject: 'Medical Terminology', 
-    instructor: 'Prof. Mark Davis',
-    meetUrl: 'https://meet.google.com/xyz-uvwx-yzv',
-    isBreak: false
-  },
-  { 
-    id: 3, 
-    time: '11:00 AM - 12:00 PM', 
-    subject: 'Patient Care Fundamentals', 
-    instructor: 'Nurse Emily Chen',
-    meetUrl: 'https://meet.google.com/qwe-rtyu-iop',
-    isBreak: false
-  },
-  { 
-    id: 4, 
-    time: '12:00 PM - 01:00 PM', 
-    subject: 'Lunch Break', 
-    instructor: '',
-    meetUrl: null,
-    isBreak: true
-  },
-  { 
-    id: 5, 
-    time: '01:00 PM - 02:00 PM', 
-    subject: 'Pharmacology Basics', 
-    instructor: 'Dr. Robert Smith',
-    meetUrl: 'https://meet.google.com/asd-fghj-klz',
-    isBreak: false
-  },
-  { 
-    id: 6, 
-    time: '02:00 PM - 03:00 PM', 
-    subject: 'Pathology Overview', 
-    instructor: 'Dr. Amanda Lewis',
-    meetUrl: 'https://meet.google.com/zxc-vbnm-qwe',
-    isBreak: false
-  },
-  { 
-    id: 7, 
-    time: '03:00 PM - 04:00 PM', 
-    subject: 'Clinical Procedures', 
-    instructor: 'Prof. Mark Davis',
-    meetUrl: 'https://meet.google.com/rty-uiop-asd',
-    isBreak: false
-  },
-];
-
-
-// --- Components ---
-
-const LoginScreen = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError('');
-    
-    // Find user in hardcoded list
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-    
-    if (user) {
-      onLogin(user);
-    } else {
-      setError('Invalid email or password. Hint: password is password123');
-    }
-  };
-
-  return (
-    <div className="flex flex-col justify-center min-h-screen px-6 bg-slate-50">
-      <div className="w-full max-w-sm mx-auto">
-        <div className="flex flex-col items-center mb-10">
-          <div className="flex items-center justify-center w-16 h-16 text-blue-600 bg-blue-100 rounded-2xl mb-4 shadow-sm">
-            <GraduationCap size={36} />
-          </div>
-          <h1 className="text-2xl font-bold text-slate-800 text-center">Jubilee Learn</h1>
-          <p className="text-slate-500 text-center mt-1 font-medium">Allied Health</p>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-          <h2 className="text-lg font-semibold text-slate-800 mb-6">Student Login</h2>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                  <User size={18} />
-                </div>
-                <input
-                  type="email"
-                  className="w-full py-2.5 pl-10 pr-3 text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                  <Lock size={18} />
-                </div>
-                <input
-                  type="password"
-                  className="w-full py-2.5 pl-10 pr-3 text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-                  placeholder="password123"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 rounded-xl border border-red-100">
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full py-3 mt-4 text-white font-medium bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm active:scale-[0.98] transition-all"
-            >
-              Log In
-            </button>
-          </form>
-          
-          <div className="mt-6 pt-6 border-t border-slate-100">
-            <p className="text-xs text-center text-slate-500">
-              Use <strong className="text-slate-700">test@example.com</strong> and <strong className="text-slate-700">password123</strong> to demo the app quickly.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const DashboardScreen = ({ user, onLogout }) => {
-  // Format today's date for display
-  const today = new Date();
-  const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const formattedDate = today.toLocaleDateString('en-US', dateOptions);
-
-  return (
-    <div className="flex flex-col min-h-screen bg-slate-100 pb-10">
-      {/* App Header */}
-      <header className="bg-blue-600 text-white pt-12 pb-6 px-6 rounded-b-3xl shadow-md">
-        <div className="flex justify-between items-start">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <GraduationCap size={20} className="opacity-90" />
-              <span className="text-sm font-semibold opacity-90 tracking-wide uppercase">Jubilee Learn</span>
-            </div>
-            <h1 className="text-2xl font-bold mt-2">Hi, {user.name.split(' ')[0]} 👋</h1>
-            <p className="text-blue-100 text-sm mt-1">Allied Health Program</p>
-          </div>
-          <button 
-            onClick={onLogout}
-            className="p-2 bg-blue-700/50 hover:bg-blue-700 rounded-full transition-colors"
-            aria-label="Logout"
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
-
-      <main className="flex-1 px-5 -mt-4">
-        {/* Date Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 mb-6 flex items-center gap-3">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-            <Calendar size={24} />
-          </div>
-          <div>
-            <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-0.5">Today's Schedule</p>
-            <p className="text-slate-800 font-semibold">{formattedDate}</p>
-          </div>
-        </div>
-
-        {/* Schedule List */}
-        <div className="space-y-4">
-          {scheduleData.map((slot) => {
-            if (slot.isBreak) {
-              return (
-                <div key={slot.id} className="flex items-center justify-center p-4 bg-slate-200/50 border border-slate-200 rounded-2xl border-dashed">
-                  <Coffee size={18} className="text-slate-500 mr-2" />
-                  <span className="text-slate-600 font-medium">{slot.time} - {slot.subject}</span>
-                </div>
-              );
-            }
-
-            return (
-              <a 
-                key={slot.id} 
-                href={slot.meetUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="block bg-white rounded-2xl p-4 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform hover:shadow-md hover:border-blue-100 group relative overflow-hidden"
-              >
-                {/* Left side accent line */}
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500 rounded-l-2xl"></div>
-                
-                <div className="flex justify-between items-center pl-2">
-                  <div className="flex-1">
-                    <div className="flex items-center text-blue-600 text-xs font-bold mb-1.5 gap-1.5">
-                      <Clock size={14} />
-                      {slot.time}
+    <!-- Mobile App Container -->
+    <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[850px] sm:my-8 sm:h-[90vh] sm:rounded-3xl shadow-2xl relative overflow-hidden flex flex-col no-scrollbar overflow-y-auto">
+        
+        <!-- ================= LOGIN SCREEN ================= -->
+        <div id="login-screen" class="flex flex-col justify-center min-h-full px-6 bg-slate-50 flex-1 py-12 fade-in">
+            <div class="w-full max-w-sm mx-auto">
+                <div class="flex flex-col items-center mb-10">
+                    <div class="flex items-center justify-center w-16 h-16 text-blue-600 bg-blue-100 rounded-2xl mb-4 shadow-sm">
+                        <i data-lucide="graduation-cap" class="w-9 h-9"></i>
                     </div>
-                    <h3 className="text-slate-800 font-bold text-base leading-tight mb-1">{slot.subject}</h3>
-                    <p className="text-slate-500 text-xs">{slot.instructor}</p>
-                  </div>
-                  
-                  <div className="flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors ml-3 shrink-0">
-                    <Video size={20} />
-                  </div>
+                    <h1 class="text-2xl font-bold text-slate-800 text-center">Jubilee Learn</h1>
+                    <p class="text-slate-500 text-center mt-1 font-medium">Allied Health</p>
                 </div>
-              </a>
-            );
-          })}
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                    <h2 class="text-lg font-semibold text-slate-800 mb-6">Student Login</h2>
+                    
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                    <i data-lucide="user" class="w-5 h-5"></i>
+                                </div>
+                                <input
+                                    type="email"
+                                    id="email-input"
+                                    class="w-full py-2.5 pl-10 pr-3 text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                                    placeholder="Enter your email"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                    <i data-lucide="lock" class="w-5 h-5"></i>
+                                </div>
+                                <input
+                                    type="password"
+                                    id="password-input"
+                                    class="w-full py-2.5 pl-10 pr-3 text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                                    placeholder="password123"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div id="error-message" class="hidden p-3 text-sm text-red-600 bg-red-50 rounded-xl border border-red-100">
+                            Invalid email or password. Hint: password is password123
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="w-full py-3 mt-4 text-white font-medium bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm active:scale-[0.98] transition-all"
+                        >
+                            Log In
+                        </button>
+                    </form>
+                    
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <p class="text-xs text-center text-slate-500">
+                            Use <strong class="text-slate-700">test@example.com</strong> and <strong class="text-slate-700">password123</strong> to demo quickly.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </main>
+
+        <!-- ================= DASHBOARD SCREEN ================= -->
+        <div id="dashboard-screen" class="hidden flex-col min-h-full bg-slate-100 pb-10 flex-1 fade-in">
+            <!-- App Header -->
+            <header class="bg-blue-600 text-white pt-12 pb-6 px-6 rounded-b-3xl shadow-md">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i data-lucide="graduation-cap" class="w-5 h-5 opacity-90"></i>
+                            <span class="text-sm font-semibold opacity-90 tracking-wide uppercase">Jubilee Learn</span>
+                        </div>
+                        <h1 class="text-2xl font-bold mt-2">Hi, <span id="user-first-name">Student</span> 👋</h1>
+                        <p class="text-blue-100 text-sm mt-1">Allied Health Program</p>
+                    </div>
+                    <button 
+                        id="logout-btn"
+                        class="p-2 bg-blue-700/50 hover:bg-blue-700 rounded-full transition-colors"
+                        aria-label="Logout"
+                    >
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 px-5 -mt-4">
+                <!-- Date Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 mb-6 flex items-center gap-3">
+                    <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                        <i data-lucide="calendar" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-0.5">Today's Schedule</p>
+                        <p id="current-date" class="text-slate-800 font-semibold"></p>
+                    </div>
+                </div>
+
+                <!-- Schedule List -->
+                <div id="schedule-container" class="space-y-4">
+                    <!-- Schedule items will be injected here via JavaScript -->
+                </div>
+            </main>
+        </div>
+
     </div>
-  );
-};
 
-// --- Main App Component ---
+    <script>
+        // --- Data ---
+        const users = [
+            { email: 'abhijithroy17@gmail.com', password: 'password123', name: 'Abhijith Roy' },
+            { email: 'amalvijayakumaramalvijayakumar@gmail.com', password: 'password123', name: 'Amal Vijayakumar' },
+            { email: 'lakshmilakshmidevin715@gmail.com', password: 'password123', name: 'Lakshmi Devi N' },
+            { email: 'sanjujacobsaji7@gmail.com', password: 'password123', name: 'Sanju Jacob Saji' },
+            { email: 'amalvijayakumara@gmail.com', password: 'password123', name: 'Amak Vijayakumar' },
+            { email: 'test@example.com', password: 'password123', name: 'Test Student' }
+        ];
 
-export default function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+        const scheduleData = [
+            { time: '09:00 AM - 10:00 AM', subject: 'Anatomy & Physiology', instructor: 'Dr. Sarah Jenkins', meetUrl: 'https://meet.google.com/abc-defg-hij', isBreak: false },
+            { time: '10:00 AM - 11:00 AM', subject: 'Medical Terminology', instructor: 'Prof. Mark Davis', meetUrl: 'https://meet.google.com/xyz-uvwx-yzv', isBreak: false },
+            { time: '11:00 AM - 12:00 PM', subject: 'Patient Care Fundamentals', instructor: 'Nurse Emily Chen', meetUrl: 'https://meet.google.com/qwe-rtyu-iop', isBreak: false },
+            { time: '12:00 PM - 01:00 PM', subject: 'Lunch Break', instructor: '', meetUrl: null, isBreak: true },
+            { time: '01:00 PM - 02:00 PM', subject: 'Pharmacology Basics', instructor: 'Dr. Robert Smith', meetUrl: 'https://meet.google.com/asd-fghj-klz', isBreak: false },
+            { time: '02:00 PM - 03:00 PM', subject: 'Pathology Overview', instructor: 'Dr. Amanda Lewis', meetUrl: 'https://meet.google.com/zxc-vbnm-qwe', isBreak: false },
+            { time: '03:00 PM - 04:00 PM', subject: 'Clinical Procedures', instructor: 'Prof. Mark Davis', meetUrl: 'https://meet.google.com/rty-uiop-asd', isBreak: false },
+        ];
 
-  return (
-    // The wrapper ensures the app looks like a mobile app even on desktop
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center font-sans">
-      <div className="w-full max-w-md min-h-screen bg-white overflow-hidden relative shadow-2xl sm:rounded-3xl sm:min-h-[850px] sm:my-8 sm:h-[90vh]">
-        {!currentUser ? (
-          <LoginScreen onLogin={setCurrentUser} />
-        ) : (
-          <DashboardScreen user={currentUser} onLogout={() => setCurrentUser(null)} />
-        )}
-      </div>
-    </div>
-  );
-}
+        // --- DOM Elements ---
+        const loginScreen = document.getElementById('login-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email-input');
+        const passwordInput = document.getElementById('password-input');
+        const errorMessage = document.getElementById('error-message');
+        const logoutBtn = document.getElementById('logout-btn');
+        const scheduleContainer = document.getElementById('schedule-container');
+        const currentDateEl = document.getElementById('current-date');
+        const userFirstNameEl = document.getElementById('user-first-name');
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Functions ---
+        
+        function renderSchedule() {
+            scheduleContainer.innerHTML = ''; // Clear existing
+            
+            scheduleData.forEach(slot => {
+                let html = '';
+                if (slot.isBreak) {
+                    html = `
+                        <div class="flex items-center justify-center p-4 bg-slate-200/50 border border-slate-200 rounded-2xl border-dashed">
+                            <i data-lucide="coffee" class="w-4 h-4 text-slate-500 mr-2"></i>
+                            <span class="text-slate-600 font-medium">${slot.time} - ${slot.subject}</span>
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <a href="${slot.meetUrl}" target="_blank" rel="noopener noreferrer" class="block bg-white rounded-2xl p-4 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform hover:shadow-md hover:border-blue-100 group relative overflow-hidden">
+                            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500 rounded-l-2xl"></div>
+                            <div class="flex justify-between items-center pl-2">
+                                <div class="flex-1">
+                                    <div class="flex items-center text-blue-600 text-xs font-bold mb-1.5 gap-1.5">
+                                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                                        ${slot.time}
+                                    </div>
+                                    <h3 class="text-slate-800 font-bold text-base leading-tight mb-1">${slot.subject}</h3>
+                                    <p class="text-slate-500 text-xs">${slot.instructor}</p>
+                                </div>
+                                <div class="flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors ml-3 shrink-0">
+                                    <i data-lucide="video" class="w-5 h-5"></i>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                }
+                scheduleContainer.insertAdjacentHTML('beforeend', html);
+            });
+            
+            // Re-initialize icons for newly injected HTML
+            lucide.createIcons();
+        }
+
+        function setDate() {
+            const today = new Date();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateEl.textContent = today.toLocaleDateString('en-US', dateOptions);
+        }
+
+        // --- Event Listeners ---
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            errorMessage.classList.add('hidden'); // Hide error initially
+            
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+
+            const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+            if (user) {
+                // Success Login
+                loginScreen.classList.add('hidden');
+                loginScreen.classList.remove('flex');
+                
+                dashboardScreen.classList.remove('hidden');
+                dashboardScreen.classList.add('flex');
+                
+                // Set User Name
+                userFirstNameEl.textContent = user.name.split(' ')[0];
+                
+                // Setup Dashboard
+                setDate();
+                renderSchedule();
+                
+                // Clear form
+                emailInput.value = '';
+                passwordInput.value = '';
+            } else {
+                // Fail Login
+                errorMessage.classList.remove('hidden');
+            }
+        });
+
+        // Hide error message when user starts typing again
+        emailInput.addEventListener('input', () => errorMessage.classList.add('hidden'));
+        passwordInput.addEventListener('input', () => errorMessage.classList.add('hidden'));
+
+        logoutBtn.addEventListener('click', function() {
+            dashboardScreen.classList.add('hidden');
+            dashboardScreen.classList.remove('flex');
+            
+            loginScreen.classList.remove('hidden');
+            loginScreen.classList.add('flex');
+        });
+
+    </script>
+</body>
+</html>
