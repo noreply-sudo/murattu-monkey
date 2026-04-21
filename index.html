@@ -262,34 +262,43 @@
         lucide.createIcons();
 
         // --- Google Sign-In Handler ---
-        function handleGoogleLogin(response) {
-            try {
-                // Decode the Google JWT token payload
-                const base64Url = response.credential.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
+// --- Google Sign-In Handler ---
+function handleGoogleLogin(response) {
+    try {
+        // Decode the Google JWT token payload
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
 
-                const googleUser = JSON.parse(jsonPayload);
-                const email = googleUser.email.toLowerCase();
+        const googleUser = JSON.parse(jsonPayload);
+        const email = googleUser.email.toLowerCase();
 
-                // Only allow the designated faculty email
-                if (email === 'physioallied@jminstitutions.com') {
-                    const user = users.find(u => u.email === email);
-                    
-                    errorMessage.classList.add('hidden');
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    switchScreen('faculty-selection-screen', true);
-                } else {
-                    errorMessage.textContent = "Unauthorized Account. Students must log in above.";
-                    errorMessage.classList.remove('hidden');
-                }
-            } catch (err) {
-                errorMessage.textContent = "Google Sign-In failed. Please try again.";
-                errorMessage.classList.remove('hidden');
+        // Check for either the specific G-Suite email or the fallback Gmail
+        if (email === 'physioallied@jminstitutions.com' || email === 'physioalliedjubilee@gmail.com') {
+            
+            // Try to find the user in the array
+            let user = users.find(u => u.email === email);
+            
+            // If the email isn't in the array (like the jminstitutions one), create a valid user object dynamically
+            if (!user) {
+                user = { email: email, name: 'Faculty Admin', course: 'Faculty' };
             }
+            
+            errorMessage.classList.add('hidden');
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            switchScreen('faculty-selection-screen', true);
+        } else {
+            errorMessage.textContent = "Unauthorized Account. Students must log in above.";
+            errorMessage.classList.remove('hidden');
         }
+    } catch (err) {
+        console.error("Login Error:", err);
+        errorMessage.textContent = "Google Sign-In failed. Please try again.";
+        errorMessage.classList.remove('hidden');
+    }
+}
 
         // --- SPA Routing & State Management ---
         function switchScreen(screenId, pushHistory = true) {
